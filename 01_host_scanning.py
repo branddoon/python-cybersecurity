@@ -19,14 +19,14 @@ class NetworkScanner:
     
     #----- Method that prints visual table -----#
     def show_table(self, data, type):
+        console = Console()
         if type == "hosts":
             table = Table(title="Network ARP scanning")
             table.add_column("IP", style="bright_blue")
             table.add_column("MAC", style="dark_cyan")
             for host in data:
                 table.add_row(host.get('IP'), host.get('MAC'))
-            console = Console()
-            console.print(table)
+        console.print(table)
 
 if __name__ == '__main__':
     print('Stating network scanning')
