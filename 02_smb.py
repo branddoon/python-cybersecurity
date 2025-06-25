@@ -1,4 +1,5 @@
 from smb.SMBConnection import SMBConnection
+import sys
 
 class SMBScanner:
 
@@ -16,16 +17,20 @@ class SMBScanner:
                 use_ntlm_v2 = True, 
                 is_direct_tcp=True
             )
-            if conn.connect(self.ip_target, 445):
+            if conn.connect(self.ip_target, 445, timeout=3):
                 print(f"Connection has been stablished at ip:{self.ip_target}")
                 for resource in conn.listShares():
                     if not resource.isSpecial and resource.name not in ['NETLOGON', 'SYSVOL']:
                         files = conn.listPath(resource.name, '/')
                         resource_dict[resource.name] = [file.filename for file in files]         
             else:
-                print('Connection was not stablished.')
+                print('SMB connection was not stablished.')
+        except TimeoutError as e:
+            print(f"Timeout during SMB conexion attempt: {e}")
+            sys.exit()
         except Exception as e:
-            print(f"Error during SMB scanning execution.{e}")
+            print(f"Error during SMB scanning execution: {e}")
+            sys.exit()
         return resource_dict
 
 if __name__ == '__main__':
