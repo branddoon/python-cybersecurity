@@ -4,16 +4,17 @@ from rich.table import Table
 from rich.console import Console
 
 class ARPScan():
-
+    
     def __init__(self, network):
         self.network = network
-        self.timeout = 1
+        self.timeout = 3
     
     #----- Method scans all network by sending ARP packets-----#
     def scan_devices_by_ARP(self):
         print("Starting ARP scanning")
         packet = Ether(dst = "ff:ff:ff:ff:ff:ff") / ARP(pdst=self.network)
-        result = srp(packet, self.timeout, verbose=0)[0]
+        result = srp(packet, timeout=self.timeout, verbose=0)[0]
+        print(result)
         devices = []
         for sent, received in track (result, description="Processing devices by ARP..."):
             devices.append({'ip':received.psrc, 'mac':received.hwsrc})
